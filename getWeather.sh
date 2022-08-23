@@ -52,3 +52,13 @@ espeak -f $TXTWEATHER -w $SNDWEATHER
 /bin/chown $ENDUSER: $SNDWEATHER
 
 #/usr/bin/clear 
+
+#Combine voice with weatherbed.mp3...
+#https://www.reddit.com/r/linux/comments/24n3oa/need_help_recording_and_combining_two_audio/
+#ffmpeg \
+#-f alsa -ac 1 -ar 44100 -i $SNDWEATHER \
+#-f alsa -ac 1 -ar 44100 -i weatherbed.mp3 \
+#-filter_complex "[0][1]amix[out]" \
+#-map "[out]" -c:a flac out.mka
+#
+#see also http://trac.ffmpeg.org/wiki/Concatenate

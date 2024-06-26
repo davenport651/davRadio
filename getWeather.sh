@@ -8,8 +8,7 @@ ANNOUNCER="Tux"
 TXTWEATHER="/home/$ENDUSER/public_html/weather.txt"
 TMPWEATHER="/tmp/weather.txt.tmp"
 SNDWEATHER="/home/$ENDUSER/public_html/weather.wav"
-#SNDWEATHER="/home/$ENDUSER/public_html/weather.mp3"
-PHOWEATHER="/home/$ENDUSER/public_html/weather.pho"
+#SNDWEATHER="/home/$ENDUSER/public_html/weather.mp3"  #<-- swap these if you're using gtts
 
 WEATHERURL="http://forecast.weather.gov/MapClick.php?lat=42.66630&lon=-84.55366779999997&unit=0&lg=english&FcstType=text&TextType=1"
 
@@ -37,8 +36,7 @@ WEATHERURL="http://forecast.weather.gov/MapClick.php?lat=42.66630&lon=-84.553667
 espeak -f $TXTWEATHER -w $SNDWEATHER
 
 #If you have mbrola configured...
-#espeak -v mb/mb-us2 -f $TXTWEATHER -w $SNDWEATHER > $PHOWEATHER
-#mbrola /usr/share/mbrola/us2 $PHOWEATHER $SNDWEATHER
+#espeak -v mb-en1 --pho -f $TXTWEATHER | mbrola /usr/share/mbrola/en1/en1 - $SNDWEATHER
 
 #IF you pip install gTTS...
 #gtts-cli -f $TXTWEATHER -o $SNDWEATHER  #NOTE: output is MP3 not WAV

@@ -21,7 +21,7 @@ WEATHERURL="http://forecast.weather.gov/MapClick.php?lat=42.66630&lon=-84.553667
 #Fondle text into readable format...
 /bin/echo "Here's your forecast from the National Weather Service, compiled by $ANNOUNCER." > $TXTWEATHER
 #Trim away the last 24 lines | Trim away the first 5 lines >> append to $TXTWEATHER
-/usr/bin/head -n -24 $TMPWEATHER | /usr/bin/tail -n +5 >> $TXTWEATHER
+/usr/bin/head -n -45 $TMPWEATHER | /usr/bin/tail -n +92 >> $TXTWEATHER
 /bin/echo "For more information, visit weather dot gov slash G, R, R." >> $TXTWEATHER
 
 #Make slight text replacement for broadcastability...
@@ -42,6 +42,10 @@ espeak -f $TXTWEATHER -w $SNDWEATHER
 
 #IF you pip install gTTS...
 #gtts-cli -f $TXTWEATHER -o $SNDWEATHER  #NOTE: output is MP3 not WAV
+
+#If you install and configure piper with voices: https://github.com/rhasspy/piper
+#PIPERVOICE="/home/$ENDUSER/Downloads/en_US-ryan-medium.onnx"
+#cat $TXTWEATHER | piper -m $PIPERVOICE -f $SNDWEATHER
 
 #convert to .mp3
 #lame -h -b 128 ${SNDWEATHER}.wav "${SNDWEATHER}.mp3"

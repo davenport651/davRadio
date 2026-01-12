@@ -1,14 +1,16 @@
 #!/bin/bash
+# davenport651 - getWeather.sh
+# to force an update use "./getWeather.sh force"
 
 # ===== User-configurable variables =====
 ENDUSER=$USER
 ANNOUNCER="Piper"
 
-#TXTWEATHER="/var/www/home.woodchuckhunters.com/weather.txt"
-TXTWEATHER="./weather.txt"
+TXTWEATHER="/var/www/home.woodchuckhunters.com/weather.txt"
+#TXTWEATHER="./weather.txt"
 TMPWEATHER="/tmp/weather.txt.tmp"
-#SNDWEATHER="/var/www/home.woodchuckhunters.com/weather.wav"
-SNDWEATHER="./weather.wav"
+SNDWEATHER="/var/www/home.woodchuckhunters.com/weather.wav"
+#SNDWEATHER="./weather.wav"
 
 # Temp files for JSON data
 TMPALERTS="/tmp/alerts.json.tmp"
@@ -21,11 +23,15 @@ ALERTSURL="https://api.weather.gov/alerts/active?point=42.6974,-84.6281"
 # ===== Check if update is needed =====
 UPDATE_NEEDED=false
 
+if [ "$1" = "force" ]; then
+        UPDATE_NEEDED=true
+fi
+
 # Check if weather.txt exists and its age
 if [ -f "$TXTWEATHER" ]; then
   # Get file age in seconds
   FILE_AGE=$(($(date +%s) - $(stat -c %Y "$TXTWEATHER")))
-  FOUR_HOURS=$((4 * 60 * 60))
+  FOUR_HOURS=$((2 * 60 * 60))
   
   if [ $FILE_AGE -gt $FOUR_HOURS ]; then
     echo "Weather file is older than 4 hours, updating..."
@@ -38,8 +44,8 @@ fi
 
 # If file is recent, check for alerts
 if [ "$UPDATE_NEEDED" = false ]; then
-  cat ./ALERTS_JSON.txt > "$TMPALERTS"
-  #curl -s "$ALERTSURL" > "$TMPALERTS"
+  #cat ./ALERTS_JSON.txt > "$TMPALERTS"
+  curl -s "$ALERTSURL" > "$TMPALERTS"
   ALERT_COUNT=$(jq -r '.features | length' "$TMPALERTS")
   
   if [ "$ALERT_COUNT" -gt 0 ]; then
@@ -131,7 +137,8 @@ sed -i "s/ EST//g" "$TMPWEATHER"
 cp "$TMPWEATHER" "$TXTWEATHER"
 
 # ===== Convert text to speech using Piper =====
-/home/$ENDUSER/piper/bin/piper -i "$TXTWEATHER" -m /home/#ENDUSER/Downloads/en_US-ryan-medium.onnx -f "$SNDWEATHER"
+VOICE="/home/$ENDUSER/Downloads/en_US-ryan-medium.onnx"
+/home/$ENDUSER/piper/bin/piper -i "$TXTWEATHER" -m "$VOICE" -f "$SNDWEATHER"
 
 # ===== Set ownership =====
 chown "$ENDUSER": "$TXTWEATHER"
